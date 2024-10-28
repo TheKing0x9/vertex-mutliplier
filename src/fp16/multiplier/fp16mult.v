@@ -9,7 +9,7 @@ module fp16mult (
     wire [9:0] rounded;
     wire [4:0] exp;
     wire [21:0] dadda_x;
-    wire inc = 0;
+    wire inc;
 
     assign sign = a[15] ^ b[15];
 
