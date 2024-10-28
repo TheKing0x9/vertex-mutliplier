@@ -6,7 +6,7 @@ module fp16mult_tb;
     reg clk = 0;
     always #5 clk = ~clk;
 
-    multiplier uut (
+    fp16mult uut (
         .a  (a),
         .b  (b),
         .x  (y),
