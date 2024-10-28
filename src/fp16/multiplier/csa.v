@@ -24,7 +24,7 @@ module csa (
     generate
         for (i = 0; i < 5; i = i + 1) begin : g_intermediate
             adder #(
-                .bits(1)
+                .BITS(1)
             ) fa (
                 .a(expA[i]),
                 .b(expB[i]),
@@ -36,7 +36,7 @@ module csa (
     endgenerate
 
     adder #(
-        .bits(5)
+        .BITS(5)
     ) rca (
         .a({1'b0, sum[4:1]}),
         .b(carry),

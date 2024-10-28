@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module csa_tb;
     reg [4:0] expA;
     reg [4:0] expB;

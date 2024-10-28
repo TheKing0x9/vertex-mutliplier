@@ -1,5 +1,5 @@
 module adder #(
-    parameter int BITS = 1
+    parameter BITS = 1
 ) (
     input wire [BITS-1:0] a,
     input wire [BITS-1:0] b,
