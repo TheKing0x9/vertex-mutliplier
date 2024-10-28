@@ -1,4 +1,4 @@
-module multiplier (
+module fp16mult (
     input clk,
     input rst,
     input reg [15:0] a,

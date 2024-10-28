@@ -58,7 +58,7 @@ local function build_module(name)
         command = command .. " -y" .. directories[i]
     end
 
-    print("Building module " .. name .. "...")
+    print("Building module " .. name .. " ...")
     print(command)
     os.execute(command)
 end
