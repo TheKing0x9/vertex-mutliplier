@@ -1,5 +1,5 @@
-local globals = require 'globals'
-local argparse = require 'argparse'
+local globals = require 'scripts.modules.globals'
+local argparse = require 'scripts.modules.argparse'
 
 local format = string.format
 local insert = table.insert

@@ -1,0 +1,9 @@
+# Executable
+*.out
+
+# Wave file
+*.vcd
+*.vcd.pdf
+
+# Build directory
+build/
