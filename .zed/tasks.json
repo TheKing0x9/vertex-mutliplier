@@ -1,0 +1,11 @@
+[
+  {
+    "label": "Run Module",
+    "use_new_terminal": false,
+    "args": ["-v", "-c"],
+    "allow_concurrent_runs": false,
+    "hide": "always",
+    "shell": "system",
+    "command": "scripts/build.lua $ZED_STEM"
+  }
+]
