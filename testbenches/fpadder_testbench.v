@@ -1,0 +1,27 @@
+module fpadder_tb;
+reg[15:0] a,b;
+reg clk,rst;
+wire[15:0] out;
+
+fp16adder fp1(clk,rst,a,b,out);
+always
+#5 clk=~clk;
+initial
+begin
+clk=0;rst=1;a=16'b0100001000000000;b=16'b0100111000000000;
+//greater lesser exponent difference check
+#10 a=16'b0110001000000000;b=16'b0100111000000000;
+#10 a=16'b0110001000000000;b=16'b0110001000000011;
+// adder inputs check
+#10 a=16'b0110001111000000;b=16'b0100111000100011;
+// shifting check
+#10 a=16'b1111101110000000;b=16'b0110100011100011;
+//finalcheck-expectedoutput=0 10011 0101110000
+#10 a=16'b0100101101100000;b=16'b0100011100000000;
+//finalcheck-expectedoutput=1 10001 1111100000
+#20 a=16'b1100101101100000;b=16'b0100011100000000;
+//finalcheck-expectedoutput=16'b0100101111011001
+#20 a = 16'b0100011101100110;b = 16'b0100100000100110;
+end
+
+endmodule
