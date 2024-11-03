@@ -61,7 +61,7 @@ module matmul (
 
     always @(posedge clk, negedge rst) begin
         if (~rst) begin
-            x <= 48'b0;
+            x <= 64'b0;
         end else begin
             x <= sum1;
         end

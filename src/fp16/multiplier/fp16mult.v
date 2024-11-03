@@ -1,8 +1,8 @@
 module fp16mult (
     input clk,
     input rst,
-    input reg [15:0] a,
-    input reg [15:0] b,
+    input [15:0] a,
+    input [15:0] b,
     output reg [15:0] x
 );
     wire sign;
