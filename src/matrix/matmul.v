@@ -13,7 +13,7 @@ module matmul (
     output reg [3:0][15:0] x;
 
     wire [15:0][15:0] partials;
-    wire [ 5:0][15:0] sum0;
+    wire [ 7:0][15:0] sum0;
     wire [ 3:0][15:0] sum1;
 
     genvar i, j;
@@ -33,7 +33,7 @@ module matmul (
 
 
     generate
-        for (i = 0; i < 11; i = i + 2) begin : g_reduce0
+        for (i = 0; i < 15; i = i + 2) begin : g_reduce0
             fp16adder adder (
                 .clk(clk),
                 .rst(rst),
@@ -46,7 +46,7 @@ module matmul (
 
 
     generate
-        for (i = 0; i < 5; i = i + 2) begin : g_reduce1
+        for (i = 0; i < 7; i = i + 2) begin : g_reduce1
             fp16adder adder (
                 .clk(clk),
                 .rst(rst),
@@ -56,8 +56,6 @@ module matmul (
             );
         end
     endgenerate
-
-    assign sum1[3] = 16'b0011110000000000;
 
     always @(posedge clk, negedge rst) begin
         if (~rst) begin

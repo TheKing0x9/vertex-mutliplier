@@ -46,6 +46,12 @@ end
 
 local function build_module(name)
     local ref = files[name]
+    if not ref then
+        print("Module " .. name .. " does not exists. Exiting ...")
+        os.exit(1)
+        return
+    end
+
     if not ref.testbench then
         print("No testbench found for module " .. name .. ". Skipping...")
         return
@@ -60,7 +66,12 @@ local function build_module(name)
 
     print("Building module " .. name .. " ...")
     print(command)
-    os.execute(command)
+
+    local code = os.execute(command)
+    if code ~= 0 then
+        print("Error building module " .. name)
+        os.exit(1)
+    end
 end
 
 local function execute_module(module)

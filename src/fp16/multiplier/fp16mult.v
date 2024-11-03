@@ -35,6 +35,16 @@ module fp16mult (
     always @(posedge clk, negedge rst) begin
         if (~rst) begin
             x <= 16'b0;
+        end else if (!(|a[14:10]) | !(|b[14:10])) begin
+            // subnormal numbers are clamped to zero
+            x[15] <= sign;
+            x[14:10] <= 5'b00000;
+            x[9:0] <= 10'b0;
+        end else if (&a[14:10] | &b[14:10]) begin
+            // infinity and NaN are clamped to infinity
+            x[15] <= sign;
+            x[14:10] <= 5'b11111;
+            x[9:0] <= 10'b0;
         end else begin
             x[15] <= sign;
             x[14:10] <= exp;
