@@ -10,11 +10,10 @@ module matmul (
     input reg [15:0][15:0] a;
     input reg [3:0][15:0] b;
 
-    output reg [3:0][15:0] x;
+    output wire [3:0][15:0] x;
 
     wire [15:0][15:0] partials;
     wire [ 7:0][15:0] sum0;
-    wire [ 3:0][15:0] sum1;
 
     genvar i, j;
     generate
@@ -52,17 +51,8 @@ module matmul (
                 .rst(rst),
                 .a  (sum0[i]),
                 .b  (sum0[i+1]),
-                .x  (sum1[i/2])
+                .x  (x[i/2])
             );
         end
     endgenerate
-
-    always @(posedge clk, negedge rst) begin
-        if (~rst) begin
-            x <= 64'b0;
-        end else begin
-            x <= sum1;
-        end
-    end
-
 endmodule

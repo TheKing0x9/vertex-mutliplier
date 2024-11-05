@@ -23,11 +23,12 @@ module fp16mult_tb;
         #12;
         assign a = 16'b0100011101100110;
         assign b = 16'b0100100000100110;
-        if (y == 16'b0101001110101100) $display("Correct");
         #10;
         assign b = 16'b0_00000_0110110010;
-        if (y == 16'b0) $display("Correct");
         #10;
+        if (y == 16'b0101001110101100) $display("Correct");
+        #10;
+        if (y == 16'b0) $display("Correct");
         $finish;
     end
 endmodule
