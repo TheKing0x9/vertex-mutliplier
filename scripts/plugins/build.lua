@@ -1,19 +1,20 @@
 #! /usr/bin/luajit
 
 local lfs = require 'lfs'
+
+local core = require "scripts.core"
+local utils = require 'scripts.modules.utils'
 local globals = require 'scripts.modules.globals'
 local argparse = require 'scripts.modules.argparse'
 
 local list_dir = lfs.dir
 local insert = table.insert
 local attributes = lfs.attributes
+local split_path = utils.split_path
 
 local directories = {}
 local files = {}
-
-local function split_path(path)
-    return string.match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
-end
+local is_main = utils.is_main()
 
 local function is_file_readable(name)
     local f = io.open(name, "r")
@@ -44,11 +45,10 @@ local function scan(directory)
     end
 end
 
-local function build_module(name)
-    local ref = files[name]
+local function build_module(name, ref, build_path, compiler, directories)
     if not ref then
         print("Module " .. name .. " does not exists. Exiting ...")
-        os.exit(1)
+        -- os.exit(1)
         return
     end
 
@@ -57,8 +57,8 @@ local function build_module(name)
         return
     end
 
-    local output = globals.build_path .. name
-    local command = globals.compiler .. " -o " .. output .. " " .. ref.file .. " " .. ref.testbench
+    local output = build_path .. '/' .. name
+    local command = compiler .. " -o " .. output .. " " .. ref.file .. " " .. ref.testbench
 
     for i = 1, #directories do
         command = command .. " -y" .. directories[i]
@@ -70,13 +70,13 @@ local function build_module(name)
     local code = os.execute(command)
     if code ~= 0 then
         print("Error building module " .. name)
-        os.exit(1)
+        -- os.exit(1)
     end
 end
 
-local function execute_module(module)
+local function execute_module(module, build_path)
     local current = lfs.currentdir()
-    lfs.chdir(globals.build_path)
+    lfs.chdir(build_path)
     local process = io.popen("./" .. module)
 
     if process == nil then
@@ -91,14 +91,19 @@ local function execute_module(module)
     lfs.chdir(current)
 end
 
-local function cleanup()
+local function cleanup(build_path)
     print("Cleaning up...")
-    for file in list_dir(globals.build_path) do
+    for file in list_dir(build_path) do
         if file ~= "." and file ~= ".." then
             print("Removing " .. file)
-            assert(os.remove(globals.build_path .. file))
+            assert(os.remove(build_path .. file))
         end
     end
+end
+
+local function view_module(module, build_path)
+    local output = './' .. build_path .. '/' .. module .. '_tb.vcd'
+    os.execute("gtkwave " .. output)
 end
 
 local function main()
@@ -112,16 +117,38 @@ local function main()
 
     local args = parser:parse()
 
-    build_module(args.module)
-    execute_module(args.module)
+    local ref = files[args.module]
+    build_module(args.module, ref, globals.build_path, globals.compiler, directories)
+    execute_module(args.module, globals.build_path)
 
     if args.view then
-        os.execute("gtkwave " .. globals.build_path .. args.module .. "_tb.vcd")
+        view_module(args.module, globals.build_path)
     end
 
     if args.clean then
-        cleanup()
+        cleanup(globals.build_path)
     end
 end
 
-main()
+if is_main then
+    main()
+else
+    local command = require 'scripts.command'
+
+    command.register('build', function(name)
+        build_module(name, core.files[name], core.config.Compilation.build_path, core.config.Compilation.compiler,
+            core.watched_directories)
+    end)
+
+    command.register('execute', function(name)
+        execute_module(name, core.config.Compilation.build_path)
+    end)
+
+    command.register('clean', function()
+        cleanup(core.config.Compilation.build_path)
+    end)
+
+    command.register('view', function(name)
+        view_module(name, core.config.Compilation.build_path)
+    end)
+end
