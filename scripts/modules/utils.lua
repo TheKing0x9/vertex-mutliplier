@@ -13,6 +13,15 @@ utils.is_main = function()
     return true
 end
 
+utils.is_file_readable = function(file)
+    local f = io.open(file, 'r')
+    if f == nil then
+        return false
+    end
+    f:close()
+    return true
+end
+
 utils.split_path = function(path)
     return match(path, "^(.-)([^\\/]-)(%.[^\\/%.]-)%.?$")
 end

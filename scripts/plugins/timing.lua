@@ -1,13 +1,10 @@
 #! /usr/bin/luajit
 
-local globals = require 'scripts.modules.globals'
-local argparse = require 'scripts.modules.argparse'
+local argparse = vbuild.argparse
 
 -- luajit standard library
 local bit = require 'bit'
 local ffi = require 'ffi'
-
-local command = require 'scripts.command'
 
 local function main()
     local parser = argparse("timing", "Timing analysis tool for Verilog modules")
