@@ -1,6 +1,6 @@
-module dadda11(a, b, y);
+module dadda11(a, b, t1, t2);
+output wire [21:0] t1, t2;
 input wire [10:0] a, b;
-output wire [21:0] y;
 wire wire_1, wire_2;
 wire wire_3, wire_4;
 wire wire_5, wire_6;
@@ -91,7 +91,6 @@ wire wire_173, wire_174;
 wire wire_175, wire_176;
 wire wire_177, wire_178;
 wire wire_179, wire_180;
-wire [20:0] t1, t2;
 assign {{ wire_1, wire_2 }} = (a[0] & b[9]) + (a[1] & b[8]);
 assign {{ wire_3, wire_4 }} = (a[0] & b[10]) + (a[1] & b[9]) + (a[2] & b[8]);
 assign {{ wire_5, wire_6 }} = (a[3] & b[7]) + (a[4] & b[6]);
@@ -184,5 +183,4 @@ assign {{ wire_177, wire_178 }} = wire_111 + wire_141 + wire_144;
 assign {{ wire_179, wire_180 }} = (a[9] & b[10]) + (a[10] & b[9]) + wire_143;
 assign t1 = {(a[10] & b[10]),wire_177,wire_175,wire_173,wire_171,wire_169,wire_167,wire_165,wire_163,wire_161,wire_159,wire_157,wire_155,wire_153,wire_151,wire_149,wire_147,wire_145,(a[2] & b[0]),(a[0] & b[1]),(a[0] & b[0])};
 assign t2 = {wire_179,wire_180,wire_178,wire_176,wire_174,wire_172,wire_170,wire_168,wire_166,wire_164,wire_162,wire_160,wire_158,wire_156,wire_154,wire_152,wire_150,wire_148,wire_146,(a[1] & b[0]),1'b0};
-ksa #(.BITS(21)) adder (.a(t1), .b(t2), .cin(1'b0), .sum(y));
 endmodule

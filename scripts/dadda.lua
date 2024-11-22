@@ -1,3 +1,5 @@
+#! /usr/bin/luajit
+
 local globals = require 'scripts.modules.globals'
 local argparse = require 'scripts.modules.argparse'
 
@@ -33,9 +35,14 @@ local function generate_verilog(args)
     local lines = {}
     local sequence = create_dadda_sequence(args.num)
 
-    insert(lines, format("module %s%d(%s, %s, %s);", args.output, args.num, args.a, args.b, args.y))
+    if args.sum then
+        insert(lines, format("module %s%d(%s, %s, %s);", args.output, args.num, args.a, args.b, args.y))
+        insert(lines, format("output wire [%d:0] %s;", 2 * args.num - 1, args.y))
+    else
+        insert(lines, format("module %s%d(%s, %s, %s1, %s2);", args.output, args.num, args.a, args.b, args.y, args.y))
+        insert(lines, format('output wire [%d:0] %s1, %s2;', 2 * args.num - 1, args.y, args.y))
+    end
     insert(lines, format("input wire [%d:0] %s, %s;", args.num - 1, args.a, args.b))
-    insert(lines, format("output wire [%d:0] %s;", 2 * args.num - 1, args.y))
 
     local partials = {}
 
@@ -104,8 +111,10 @@ local function generate_verilog(args)
         end
     end
 
-    insert(wires, format("wire [%d:0] t1, t2;", 2 * args.num - 2))
     -- multiplier ends here
+    if args.sum then
+        insert(wires, format("wire [%d:0] t1, t2;", 2 * args.num - 2))
+    end
     for _, v in ipairs(wires) do insert(lines, v) end
     for _, v in ipairs(assigns) do insert(lines, v) end
 
@@ -124,8 +133,11 @@ local function generate_verilog(args)
     insert(lines, format('assign t1 = %s;', term_one))
     insert(lines, format('assign t2 = %s;', term_two))
 
-    insert(lines,
-        format('ksa #(.BITS(%d)) adder (.a(%s), .b(%s), .cin(1\'b0), .sum(%s));', 2 * args.num - 1, 't1', 't2', args.y))
+    if args.sum then
+        insert(lines,
+            format('ksa #(.BITS(%d)) adder (.a(%s), .b(%s), .cin(1\'b0), .sum(%s));', 2 * args.num - 1, 't1', 't2',
+                args.y))
+    end
     -- send the terms to an 21 bit KSA
     insert(lines, "endmodule")
 
@@ -156,6 +168,7 @@ local function main()
     parser:option("-a", "Multiplier input A", "a")
     parser:option("-b", "Multiplier input B", "b")
     parser:option("-y", "Multiplier output", "y")
+    parser:flag("-s --sum", "Sum the two resulting terms")
 
     local args = parser:parse()
     args.num = tonumber(args.num)

@@ -7,3 +7,10 @@
 
 # Build directory
 build/
+
+# luarc Configuration file
+.luarc.json
+
+# VBuild files
+vbuild.config
+.vbuild_history

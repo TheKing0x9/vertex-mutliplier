@@ -5,29 +5,46 @@ module fp16mult (
     input [15:0] b,
     output reg [15:0] x
 );
-    wire sign;
-    wire [9:0] rounded;
-    wire [4:0] exp;
-    wire [21:0] dadda_x;
-    wire inc;
 
-    assign sign = a[15] ^ b[15];
+    wire [4:0] expa, expb;
+    wire [20:0] t1, t2;
+    wire sign;
+
+    wire [21:0] sum;
+    wire inc;
+    wire [4:0] exp;
+    wire [9:0] rounded;
+
+    fp16mult_stage1 stage1 (
+        .a   (a),
+        .b   (b),
+        .clk (clk),
+        .rst (rst),
+        .sign(sign),
+        .expa(expa),
+        .expb(expb),
+        .t1  (t1),
+        .t2  (t2)
+    );
+
+    ksa #(
+        .BITS(21)
+    ) adder (
+        .a  (t1),
+        .b  (t2),
+        .cin(1'b0),
+        .sum(sum)
+    );
 
     csa expAdder (
-        .expA(a[14:10]),
-        .expB(b[14:10]),
+        .expA(expa),
+        .expB(expb),
         .inc (inc),
         .exp (exp)
     );
 
-    dadda11 dadda (
-        .a({1'b1, a[9:0]}),
-        .b({1'b1, b[9:0]}),
-        .y(dadda_x)
-    );
-
     rounding round (
-        .num  (dadda_x),
+        .num  (sum),
         .round(rounded),
         .shift(inc)
     );
@@ -35,12 +52,12 @@ module fp16mult (
     always @(posedge clk, negedge rst) begin
         if (~rst) begin
             x <= 16'b0;
-        end else if (!(|a[14:10]) | !(|b[14:10])) begin
+        end else if (!(|expa) | !(|expb)) begin
             // subnormal numbers are clamped to zero
             x[15] <= sign;
             x[14:10] <= 5'b00000;
             x[9:0] <= 10'b0;
-        end else if (&a[14:10] | &b[14:10]) begin
+        end else if (&expa | &expb) begin
             // infinity and NaN are clamped to infinity
             x[15] <= sign;
             x[14:10] <= 5'b11111;
