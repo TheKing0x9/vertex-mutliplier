@@ -45,9 +45,17 @@ module fp16adder (
         end else begin
             shiftedai <= adderinput2 >> exp_diff;
             sticky = 0;
-            for (i = 1; i < exp_diff; i = i + 1) begin
-                if (adderinput2[i-1] == 1) sticky = 1;
-            end
+	    if(exp_diff>=2&&adderinput2[0]==1)sticky = 1;
+	    if(exp_diff>=3&&adderinput2[1]==1)sticky = 1;
+	    if(exp_diff>=4&&adderinput2[2]==1)sticky = 1;
+	    if(exp_diff>=5&&adderinput2[3]==1)sticky = 1;
+	    if(exp_diff>=6&&adderinput2[4]==1)sticky = 1;
+	    if(exp_diff>=7&&adderinput2[5]==1)sticky = 1;
+	    if(exp_diff>=8&&adderinput2[6]==1)sticky = 1;
+	    if(exp_diff>=9&&adderinput2[7]==1)sticky = 1;
+	    if(exp_diff>=10&&adderinput2[8]==1)sticky = 1;
+	    if(exp_diff>=11&&adderinput2[9]==1)sticky = 1;
+	    if(exp_diff>=12&&adderinput2[10]==1)sticky = 1;
         end
         if (sticky == 1) shiftedai[0] <= 1;
     end
@@ -57,14 +65,22 @@ module fp16adder (
 
     //Normalisation and rounding
     always @(*) begin
-        iszero = 1;
-        for (i = 0; i <= 13; i = i + 1) begin
-            if (adderoutput[i]) begin
-                firstone = i;
-                iszero   = 0;
-            end
-        end
-
+        iszero = 0;
+	if(adderoutput[13])firstone = 13;
+	else if(adderoutput[12]) firstone = 12;
+	else if(adderoutput[11]) firstone = 11;
+	else if(adderoutput[10]) firstone = 10;
+	else if(adderoutput[9]) firstone = 9;
+	else if(adderoutput[8]) firstone = 8;
+	else if(adderoutput[7]) firstone = 7;
+	else if(adderoutput[6]) firstone = 6;
+	else if(adderoutput[5]) firstone = 5;
+	else if(adderoutput[4]) firstone = 4;
+	else if(adderoutput[3]) firstone = 3;
+	else if(adderoutput[2]) firstone = 2;
+	else if(adderoutput[1]) firstone = 1;
+	else if(adderoutput[0]) firstone = 0;
+	else iszero = 1;
         if (firstone == 13) begin
             shiftedoutput = adderoutput >> 1;
             if (adderoutput[0]) shiftedoutput[0] = 1;
