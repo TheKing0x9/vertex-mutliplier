@@ -79,7 +79,7 @@ local function main(args)
     parser:flag("-v --view", "Open gtkwave after building")
     parser:flag("-c --clean", "Enables auto cleaning output")
 
-    local args, err = parser:pparse(args)
+    local args, err = parser:parse(args)
     build_module(args.module, vbuild.files[args.module], config.Compilation.build_path,
         config.Compilation.compiler,
         vbuild.watched_dirs)

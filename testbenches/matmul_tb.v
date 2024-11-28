@@ -1,46 +1,62 @@
+`timescale 1ns / 1ps
+
 module matmul_tb;
-    reg [15:0][15:0] a;
-    reg [3:0][15:0] b;
-    wire [3:0][15:0] y;
+    integer file, i, file2;
 
-    reg clk = 0;
-    always #5 clk = ~clk;
+    reg [15:0] binary_data;  // assuming 8-bit binary data
+    reg clk = 0, rst = 1;
+    reg  [15:0][15:0] a;
+    reg  [ 3:0][15:0] b;
+    wire [ 3:0][15:0] out;
 
-    matmul uut (
+    matmul f1 (
+        .clk(clk),
+        .rst(rst),
         .a  (a),
         .b  (b),
-        .x  (y),
-        .clk(clk),
-        .rst(1'b1)
+        .x  (out)
     );
+    always #1 clk = ~clk;
 
     initial begin
         $dumpfile("matmul_tb.vcd");
         $dumpvars(0, matmul_tb);
-        $display("A    B     Y");
-        $monitor("%d %d %d", a, b, y);
 
-        #3;
+        // Open the file in read mode
+        file  = $fopen("binarydata.txt", "r");
+        file2 = $fopen("binarydata2.txt", "w");
+        if (file == 0) begin
+            $display("Failed to open file");
+            $finish;
+        end
 
-        a[0]  = 16'b0011010011001101;  // 0.3001
-        a[1]  = 16'b0010100100011111;  // 0.04001
-        a[2]  = 16'b0011010111000011;  // 0.3602
-        a[3]  = 16'b0011100111000011;  // 0.7203
-
-        a[12] = 16'b0;
-        a[13] = 16'b0;
-        a[14] = 16'b0;
-        a[15] = 16'b0011110000000000;
-
-        b[0]  = 16'b0011110110011010;  //1.4
-        b[1]  = 16'b0011101011100001;  // 0.86
-        b[2]  = 16'b0100000011001101;  // 2.4
-        b[3]  = 16'b0011110000000000;  // 1
-
-        // result 0.54
-        #70;
-
-        // if (y == 16'b0100101111011001) $display("Correct");
+        for (i = 0; i < 16; i = i + 1) begin
+            if (!$feof(file)) begin
+                if ($fscanf(file, "%b\n", binary_data)) begin
+                    $display("Read binary data: %b", binary_data);
+                    a[i] = binary_data;
+                end
+            end
+        end
+        $display("Value of a %b", a[15]);
+        while (!$feof(
+            file
+        )) begin
+            for (i = 0; i < 4; i = i + 1) begin
+                if (!$feof(file)) begin
+                    if ($fscanf(file, "%b\n", binary_data)) begin
+                        $display("Read binary data: %b", binary_data);
+                        b[i] = binary_data;
+                    end
+                end
+            end
+            #10 $display("Value of out %b", out);
+            for (i = 0; i < 4; i = i + 1) begin
+                $fwrite(file2, "%b\n", out[i]);
+            end
+        end
+        // Close the file
+        $fclose(file);
 
         $finish;
     end
