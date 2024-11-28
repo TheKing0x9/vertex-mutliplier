@@ -1,0 +1,100 @@
+
+22. Printing statistics.
+
+=== matmul ===
+
+   Number of wires:              24346
+   Number of wire bits:          24727
+   Number of public wires:        1786
+   Number of public wire bits:    2167
+   Number of ports:                  5
+   Number of port bits:            386
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:              20669
+     AND2_X1                      1678
+     AND2_X2                         4
+     AND2_X4                         1
+     AND3_X1                       164
+     AND3_X2                         6
+     AND3_X4                         1
+     AND4_X1                        72
+     AND4_X2                         6
+     AND4_X4                         3
+     AOI211_X2                      80
+     AOI211_X4                       7
+     AOI21_X1                     1684
+     AOI21_X2                       23
+     AOI21_X4                        5
+     AOI221_X1                     163
+     AOI221_X2                      31
+     AOI221_X4                       8
+     AOI222_X1                      13
+     AOI222_X2                       5
+     AOI222_X4                       1
+     AOI22_X1                      154
+     AOI22_X2                        6
+     AOI22_X4                        1
+     BUF_X1                        917
+     BUF_X2                         92
+     BUF_X4                         44
+     BUF_X8                          4
+     CLKBUF_X1                      37
+     CLKBUF_X2                       6
+     DFFR_X1                      1205
+     FA_X1                        1380
+     HA_X1                        1151
+     INV_X1                       3222
+     INV_X2                         12
+     INV_X4                          3
+     LOGIC1_X1                       1
+     MUX2_X1                      1229
+     MUX2_X2                         6
+     NAND2_X1                     1215
+     NAND2_X2                        9
+     NAND2_X4                        2
+     NAND3_X1                      394
+     NAND3_X2                        5
+     NAND3_X4                        1
+     NAND4_X1                      179
+     NAND4_X2                       14
+     NAND4_X4                        3
+     NOR2_X1                      1382
+     NOR2_X2                        10
+     NOR2_X4                         3
+     NOR3_X1                       415
+     NOR3_X2                        18
+     NOR3_X4                        10
+     NOR4_X1                       151
+     NOR4_X2                        20
+     NOR4_X4                        10
+     OAI211_X2                      78
+     OAI211_X4                       1
+     OAI21_X1                     1354
+     OAI21_X2                       15
+     OAI221_X1                     195
+     OAI221_X2                       5
+     OAI222_X1                      18
+     OAI222_X4                       1
+     OAI22_X1                      181
+     OAI22_X2                        5
+     OAI22_X4                        3
+     OAI33_X1                       50
+     OR2_X1                        322
+     OR2_X2                          5
+     OR2_X4                          1
+     OR3_X1                        145
+     OR3_X2                          4
+     OR3_X4                          6
+     OR4_X1                         86
+     OR4_X2                         14
+     OR4_X4                          3
+     XNOR2_X1                      672
+     XNOR2_X2                       22
+     XOR2_X1                       211
+     XOR2_X2                         6
+
+   Chip area for module '\matmul': 33462.002000
+     of which used for sequential elements: 6410.600000 (19.16%)
+
